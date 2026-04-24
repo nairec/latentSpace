@@ -1,8 +1,9 @@
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Grid, Html } from '@react-three/drei'
+import { Canvas } from "@react-three/fiber";
+import { EffectComposer, Bloom, DepthOfField } from '@react-three/postprocessing'
+import {  Grid, Stars } from '@react-three/drei'
 import { usePointStore } from "../hooks/sharedState";
-import { useState, useRef } from "react";
 import WordPoint from "./WordPoint";
+import CameraController from "./CameraController";
 
 const categoryColorMap: Record<string, string> = {
     "Nature": "#22c55e",        
@@ -10,7 +11,8 @@ const categoryColorMap: Record<string, string> = {
     "Emotions": "#ec4899",      
     "Geography": "#f59e0b",    
     "Actions": "#8b5cf6",       
-    "History": "#ef4444",       
+    "History": "#ef4444",
+    "Sports":  "#efc144"      
 };
 
 export default function spaceRepresentation() {
@@ -27,8 +29,12 @@ export default function spaceRepresentation() {
     return (
         <div className="fixed inset-0 z-0">
             <Canvas>
-                <ambientLight color="white" intensity={.8} />
-                <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+                <fog attach="fog" args={['#050505', 10, 50]} />
+            
+                <shaderMaterial attach="background"/>
+                <ambientLight intensity={.5} />
+                <directionalLight position={[5, 5, 5]} intensity={1} />
+                <CameraController />
                 {points.map((point, index) => (
                     <WordPoint key={index} point={point} index={index} color={getColorForCategory(point.category)} />
                 ))}
